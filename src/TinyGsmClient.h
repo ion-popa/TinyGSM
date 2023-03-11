@@ -114,6 +114,13 @@ typedef TinyGsmSequansMonarch::GsmClientSequansMonarch TinyGsmClient;
 typedef TinyGsmSequansMonarch::GsmClientSecureSequansMonarch
     TinyGsmClientSecure;
 
+#elif defined(TINY_GSM_MODEM_SEQUANS_GM02S)
+#include "TinyGsmClientSequansGM02S.h"
+typedef TinyGsmSequansGM02S                          TinyGsm;
+typedef TinyGsmSequansGM02S::GsmClientSequansGM02S TinyGsmClient;
+typedef TinyGsmSequansGM02S::GsmClientSecureSequansGM02S
+    TinyGsmClientSecure;
+
 #else
 #error "Please define GSM modem model"
 #endif
