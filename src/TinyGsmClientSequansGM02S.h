@@ -1,13 +1,13 @@
 /**
- * @file       TinyGsmClientSequansMonarch.h
+ * @file       TinyGsmClientSequansGM02S.h
  * @author     Michael Krumpus
  * @license    LGPL-3.0
  * @copyright  Copyright (c) 2019 Michael Krumpus
  * @date       Jan 2019
  */
 
-#ifndef SRC_TINYGSMCLIENTSEQUANSMONARCH_H_
-#define SRC_TINYGSMCLIENTSEQUANSMONARCH_H_
+#ifndef SRC_TINYGSMCLIENTSEQUANSGM02S_H_
+#define SRC_TINYGSMCLIENTSEQUANSGM02S_H_
 
 // #define TINY_GSM_DEBUG Serial
 
@@ -51,40 +51,40 @@ enum SocketStatus {
   SOCK_OPENING                = 6,
 };
 
-class TinyGsmSequansMonarch
-    : public TinyGsmModem<TinyGsmSequansMonarch>,
-      public TinyGsmGPRS<TinyGsmSequansMonarch>,
-      public TinyGsmTCP<TinyGsmSequansMonarch, TINY_GSM_MUX_COUNT>,
-      public TinyGsmSSL<TinyGsmSequansMonarch>,
-      public TinyGsmCalling<TinyGsmSequansMonarch>,
-      public TinyGsmSMS<TinyGsmSequansMonarch>,
-      public TinyGsmTime<TinyGsmSequansMonarch>,
-      public TinyGsmTemperature<TinyGsmSequansMonarch> {
-  friend class TinyGsmModem<TinyGsmSequansMonarch>;
-  friend class TinyGsmGPRS<TinyGsmSequansMonarch>;
-  friend class TinyGsmTCP<TinyGsmSequansMonarch, TINY_GSM_MUX_COUNT>;
-  friend class TinyGsmSSL<TinyGsmSequansMonarch>;
-  friend class TinyGsmCalling<TinyGsmSequansMonarch>;
-  friend class TinyGsmSMS<TinyGsmSequansMonarch>;
-  friend class TinyGsmTime<TinyGsmSequansMonarch>;
-  friend class TinyGsmTemperature<TinyGsmSequansMonarch>;
+class TinyGsmSequansGM02S
+    : public TinyGsmModem<TinyGsmSequansGM02S>,
+      public TinyGsmGPRS<TinyGsmSequansGM02S>,
+      public TinyGsmTCP<TinyGsmSequansGM02S, TINY_GSM_MUX_COUNT>,
+      public TinyGsmSSL<TinyGsmSequansGM02S>,
+      public TinyGsmCalling<TinyGsmSequansGM02S>,
+      public TinyGsmSMS<TinyGsmSequansGM02S>,
+      public TinyGsmTime<TinyGsmSequansGM02S>,
+      public TinyGsmTemperature<TinyGsmSequansGM02S> {
+  friend class TinyGsmModem<TinyGsmSequansGM02S>;
+  friend class TinyGsmGPRS<TinyGsmSequansGM02S>;
+  friend class TinyGsmTCP<TinyGsmSequansGM02S, TINY_GSM_MUX_COUNT>;
+  friend class TinyGsmSSL<TinyGsmSequansGM02S>;
+  friend class TinyGsmCalling<TinyGsmSequansGM02S>;
+  friend class TinyGsmSMS<TinyGsmSequansGM02S>;
+  friend class TinyGsmTime<TinyGsmSequansGM02S>;
+  friend class TinyGsmTemperature<TinyGsmSequansGM02S>;
 
   /*
    * Inner Client
    */
  public:
-  class GsmClientSequansMonarch : public GsmClient {
-    friend class TinyGsmSequansMonarch;
+  class GsmClientSequansGM02S : public GsmClient {
+    friend class TinyGsmSequansGM02S;
 
    public:
-    GsmClientSequansMonarch() {}
+    GsmClientSequansGM02S() {}
 
-    explicit GsmClientSequansMonarch(TinyGsmSequansMonarch& modem,
+    explicit GsmClientSequansGM02S(TinyGsmSequansGM02S& modem,
                                      uint8_t                mux = 1) {
       init(&modem, mux);
     }
 
-    bool init(TinyGsmSequansMonarch* modem, uint8_t mux = 1) {
+    bool init(TinyGsmSequansGM02S* modem, uint8_t mux = 1) {
       this->at       = modem;
       sock_available = 0;
       prev_check     = 0;
@@ -134,13 +134,13 @@ class TinyGsmSequansMonarch
    * Inner Secure Client
    */
  public:
-  class GsmClientSecureSequansMonarch : public GsmClientSequansMonarch {
+  class GsmClientSecureSequansGM02S : public GsmClientSequansGM02S {
    public:
-    GsmClientSecureSequansMonarch() {}
+    GsmClientSecureSequansGM02S() {}
 
-    explicit GsmClientSecureSequansMonarch(TinyGsmSequansMonarch& modem,
+    explicit GsmClientSecureSequansGM02S(TinyGsmSequansGM02S& modem,
                                            uint8_t                mux = 1)
-        : GsmClientSequansMonarch(modem, mux) {}
+        : GsmClientSequansGM02S(modem, mux) {}
 
    protected:
     bool strictSSL = false;
@@ -183,7 +183,7 @@ class TinyGsmSequansMonarch
    * Constructor
    */
  public:
-  explicit TinyGsmSequansMonarch(Stream& stream) : stream(stream) {
+  explicit TinyGsmSequansGM02S(Stream& stream) : stream(stream) {
     memset(sockets, 0, sizeof(sockets));
   }
 
@@ -193,7 +193,7 @@ class TinyGsmSequansMonarch
  protected:
   bool initImpl(const char* pin = NULL) {
     DBG(GF("### TinyGSM Version:"), TINYGSM_VERSION);
-    DBG(GF("### TinyGSM Compiled Module:  TinyGsmClientSequansMonarch"));
+    DBG(GF("### TinyGSM Compiled Module:  TinyGsmClientSequansGM02S"));
 
     if (!testAT()) { return false; }
 
@@ -268,7 +268,7 @@ class TinyGsmSequansMonarch
 
   void maintainImpl() {
     for (int mux = 1; mux <= TINY_GSM_MUX_COUNT; mux++) {
-      GsmClientSequansMonarch* sock = sockets[mux % TINY_GSM_MUX_COUNT];
+      GsmClientSequansGM02S* sock = sockets[mux % TINY_GSM_MUX_COUNT];
       if (sock && sock->got_data) {
         sock->got_data       = false;
         sock->sock_available = modemGetAvailable(mux);
@@ -333,9 +333,7 @@ class TinyGsmSequansMonarch
     return (s == REG_OK_HOME || s == REG_OK_ROAMING);
   }
   String getLocalIPImpl() {
-    // sendAT(GF("+CGPADDR=3")); ion
     sendAT(GF("+CGPADDR=1"));
-    // if (waitResponse(10000L, GF("+CGPADDR: 3,\"")) != 1) { return ""; }ion
     if (waitResponse(10000L, GF("+CGPADDR: 1,\"")) != 1) { return ""; }
     String res = stream.readStringUntil('\"');
     waitResponse();
@@ -350,20 +348,17 @@ class TinyGsmSequansMonarch
                        const char* pwd = NULL) {
     gprsDisconnect();
 
-    // Define the PDP context (This uses context #3!)
-    // sendAT(GF("+CGDCONT=3,\"IPV4V6\",\""), apn, '"');ion
+    // Define the PDP context (This uses context #1!)
     sendAT(GF("+CGDCONT=1,\"IPV4V6\",\""), apn, '"');
     waitResponse();
 
     // Set authentication
     if (user && strlen(user) > 0) {
-    //   sendAT(GF("+CGAUTH=3,1,\""), user, GF("\",\""), pwd, GF("\""));ion
       sendAT(GF("+CGAUTH=1,1,\""), user, GF("\",\""), pwd, GF("\""));
       waitResponse();
     }
 
     // Activate the PDP context
-    // sendAT(GF("+CGACT=1,3")); ion
     sendAT(GF("+CGACT=1,1"));
     waitResponse(60000L);
 
@@ -453,7 +448,7 @@ class TinyGsmSequansMonarch
     // Socket configuration
     // AT+SQNSCFG:<connId1>, <cid1>, <pktSz1>, <maxTo1>, <connTo1>, <txTo1>
     // <connId1> = Connection ID = mux
-    // <cid1> = PDP context ID = 3 - this is number set up above in the
+    // <cid1> = PDP context ID = 1 - this is number set up above in the
     // GprsConnect function
     // <pktSz1> = Packet Size, used for online data mode only = 300 (default)
     // <maxTo1> = Max timeout in seconds = 90 (default)
@@ -461,7 +456,6 @@ class TinyGsmSequansMonarch
     //           = 600 (default)
     // <txTo1> = Data sending timeout in hundreds of milliseconds,
     // used for online data mode only = 50 (default)
-    // sendAT(GF("+SQNSCFG="), mux, GF(",3,300,90,600,50")); ion
     sendAT(GF("+SQNSCFG="), mux, GF(",1,300,90,600,50"));
     waitResponse(5000L);
 
@@ -608,7 +602,7 @@ class TinyGsmSequansMonarch
       // SOCK_LISTENING              = 4,
       // SOCK_INCOMING               = 5,
       // SOCK_OPENING                = 6,
-      GsmClientSequansMonarch* sock = sockets[muxNo % TINY_GSM_MUX_COUNT];
+      GsmClientSequansGM02S* sock = sockets[muxNo % TINY_GSM_MUX_COUNT];
       if (sock) {
         sock->sock_connected = ((status != SOCK_CLOSED) &&
                                 (status != SOCK_INCOMING) &&
@@ -731,9 +725,9 @@ class TinyGsmSequansMonarch
   Stream& stream;
 
  protected:
-  GsmClientSequansMonarch* sockets[TINY_GSM_MUX_COUNT];
+  GsmClientSequansGM02S* sockets[TINY_GSM_MUX_COUNT];
   // GSM_NL (\r\n) is not accepted with SQNSSENDEXT in data mode so use \n
   const char*              gsmNL = "\n";
 };
 
-#endif  // SRC_TINYGSMCLIENTSEQUANSMONARCH_H_
+#endif  // SRC_TINYGSMCLIENTSEQUANSGM02S_H_
