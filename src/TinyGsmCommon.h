@@ -14,6 +14,8 @@
 
 #if defined(SPARK) || defined(PARTICLE)
 #include "Particle.h"
+#elif defined(STM32_ARDUINO_COMPAT)
+#include <ArduinoCompat.h>
 #elif defined(ARDUINO)
 #if ARDUINO >= 100
 #include "Arduino.h"
