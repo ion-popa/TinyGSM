@@ -22,6 +22,9 @@
 #else
 #include "WProgram.h"
 #endif
+#ifdef TINY_GSM_CUSTOM_INC
+#include "watchdog.h"
+#endif
 #endif
 
 #if defined(ARDUINO_DASH)
@@ -37,6 +40,22 @@
 #ifndef TINY_GSM_YIELD
 #define TINY_GSM_YIELD() \
   { delay(TINY_GSM_YIELD_MS); }
+#endif
+
+// TINY_GSM_CUSTOM_INC
+#ifndef WDT_LONG_LOOP_ENTER
+#define WDT_LONG_LOOP_ENTER(x)
+#endif
+
+#ifndef WDT_LONG_LOOP_LEAVE
+#define WDT_LONG_LOOP_LEAVE()
+#endif
+
+#ifndef WDT_LONG_LOOP_FEED
+#define WDT_LONG_LOOP_FEED()
+#endif
+#ifndef WDT_FEED
+#define WDT_FEED()
 #endif
 
 #define TINY_GSM_ATTR_NOT_AVAILABLE \

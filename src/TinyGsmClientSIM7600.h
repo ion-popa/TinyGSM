@@ -364,6 +364,7 @@ class TinyGsmSim7600 : public TinyGsmModem<TinyGsmSim7600>,
     // We to ignore any immediate response and wait for the
     // URC to show it's really connected.
     sendAT(GF("+NETOPEN"));
+    //TODO wait for NETOPEN and check if 0 or 1, thus not needing to wait timeout for 0
     if (waitResponse(75000L, GF(GSM_NL "+NETOPEN: 0")) != 1) { return false; }
 
     return true;
@@ -754,7 +755,9 @@ class TinyGsmSim7600 : public TinyGsmModem<TinyGsmSim7600>,
     data.reserve(64);
     uint8_t  index       = 0;
     uint32_t startMillis = millis();
+    WDT_LONG_LOOP_ENTER(timeout_ms);
     do {
+    	WDT_LONG_LOOP_FEED();
       TINY_GSM_YIELD();
       while (stream.available() > 0) {
         TINY_GSM_YIELD();
@@ -827,6 +830,8 @@ class TinyGsmSim7600 : public TinyGsmModem<TinyGsmSim7600>,
     }
     // data.replace(GSM_NL, "/");
     // DBG('<', index, '>', data);
+    WDT_LONG_LOOP_FEED();
+    WDT_LONG_LOOP_LEAVE();
     return index;
   }
 

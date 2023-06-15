@@ -637,7 +637,9 @@ class TinyGsmSequansGM02S
     data.reserve(64);
     uint8_t  index       = 0;
     uint32_t startMillis = millis();
+    WDT_LONG_LOOP_ENTER(timeout_ms);
     do {
+        WDT_LONG_LOOP_FEED();
       TINY_GSM_YIELD();
       while (stream.available() > 0) {
         TINY_GSM_YIELD();
@@ -693,6 +695,8 @@ class TinyGsmSequansGM02S
     }
     // data.replace(GSM_NL, "/");
     // DBG('<', index, '>', data);
+    WDT_LONG_LOOP_FEED();
+    WDT_LONG_LOOP_LEAVE();
     return index;
   }
 
